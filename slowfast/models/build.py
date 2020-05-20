@@ -29,6 +29,8 @@ def build_model(cfg):
     # Construct the model
     name = cfg.MODEL.MODEL_NAME
     model = MODEL_REGISTRY.get(name)(cfg)
+    if cfg.NUM_GPUS < 1:
+        return model
     # Determine the GPU used by the current process
     cur_device = torch.cuda.current_device()
     # Transfer the model to the current GPU device

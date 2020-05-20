@@ -117,12 +117,16 @@ def log_model_info(model, cfg, is_train=True):
     """
     logger.info("Model:\n{}".format(model))
     logger.info("Params: {:,}".format(params_count(model)))
-    logger.info("Mem: {:,} MB".format(gpu_mem_usage()))
-    logger.info(
-        "FLOPs: {:,} GFLOPs".format(get_flop_stats(model, cfg, is_train))
-    )
-    logger.info("nvidia-smi")
-    os.system("nvidia-smi")
+    if cfg.NUM_GPUS > 0:
+        logger.info("Mem: {:,} MB".format(gpu_mem_usage()))
+        logger.info(
+            "FLOPs: {:,} GFLOPs".format(get_flop_stats(model, cfg, is_train))
+        )
+        logger.info("nvidia-smi")
+        os.system("nvidia-smi")
+    else:
+        _, mem_total = cpu_mem_usage()
+        logger.info("Mem: {:,} MB".format(mem_total))
 
 
 def is_eval_epoch(cfg, cur_epoch):
